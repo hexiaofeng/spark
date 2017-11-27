@@ -27,9 +27,9 @@ private[spark] object Config extends Logging {
 
   val KUBERNETES_NAMESPACE =
     ConfigBuilder("spark.kubernetes.namespace")
-      .doc("The namespace that will be used for running the driver and executor pods. When using" +
-        " spark-submit in cluster mode, this can also be passed to spark-submit via the" +
-        " --kubernetes-namespace command line argument.")
+      .doc("The namespace that will be used for running the driver and executor pods. When using " +
+        "spark-submit in cluster mode, this can also be passed to spark-submit via the " +
+        "--kubernetes-namespace command line argument.")
       .stringConf
       .createWithDefault("default")
 
@@ -41,8 +41,8 @@ private[spark] object Config extends Logging {
 
   val EXECUTOR_DOCKER_IMAGE =
     ConfigBuilder("spark.kubernetes.executor.docker.image")
-      .doc("Docker image to use for the executors. Specify this using the standard Docker tag" +
-        " format.")
+      .doc("Docker image to use for the executors. Specify this using the standard Docker tag " +
+        "format.")
       .stringConf
       .createWithDefault(s"spark-executor:$sparkVersion")
 
@@ -65,10 +65,10 @@ private[spark] object Config extends Logging {
 
   val KUBERNETES_SERVICE_ACCOUNT_NAME =
     ConfigBuilder(s"$KUBERNETES_AUTH_DRIVER_CONF_PREFIX.serviceAccountName")
-      .doc("Service account that is used when running the driver pod. The driver pod uses" +
-        " this service account when requesting executor pods from the API server. If specific" +
-        " credentials are given for the driver pod to use, the driver will favor" +
-        " using those credentials instead.")
+      .doc("Service account that is used when running the driver pod. The driver pod uses " +
+        "this service account when requesting executor pods from the API server. If specific " +
+        "credentials are given for the driver pod to use, the driver will favor " +
+        "using those credentials instead.")
       .stringConf
       .createOptional
 
@@ -86,10 +86,10 @@ private[spark] object Config extends Logging {
 
   val KUBERNETES_DRIVER_MEMORY_OVERHEAD =
     ConfigBuilder("spark.kubernetes.driver.memoryOverhead")
-      .doc("The amount of off-heap memory (in megabytes) to be allocated for the driver and the" +
-        " driver submission server. This is memory that accounts for things like VM overheads," +
-        " interned strings, other native overheads, etc. This tends to grow with the driver's" +
-        " memory size (typically 6-10%).")
+      .doc("The amount of off-heap memory (in megabytes) to be allocated for the driver and the " +
+        "driver submission server. This is memory that accounts for things like VM overheads, " +
+        "interned strings, other native overheads, etc. This tends to grow with the driver's " +
+        "memory size (typically 6-10%).")
       .bytesConf(ByteUnit.MiB)
       .createOptional
 
@@ -98,9 +98,9 @@ private[spark] object Config extends Logging {
   // based on the executor memory.
   val KUBERNETES_EXECUTOR_MEMORY_OVERHEAD =
     ConfigBuilder("spark.kubernetes.executor.memoryOverhead")
-      .doc("The amount of off-heap memory (in megabytes) to be allocated per executor. This" +
-        " is memory that accounts for things like VM overheads, interned strings, other native" +
-        " overheads, etc. This tends to grow with the executor size. (typically 6-10%).")
+      .doc("The amount of off-heap memory (in megabytes) to be allocated per executor. This " +
+        "is memory that accounts for things like VM overheads, interned strings, other native " +
+        "overheads, etc. This tends to grow with the executor size. (typically 6-10%).")
       .bytesConf(ByteUnit.MiB)
       .createOptional
 
@@ -117,22 +117,10 @@ private[spark] object Config extends Logging {
       .stringConf
       .createWithDefault("spark")
 
-  val KUBERNETES_ALLOCATION_BATCH_SIZE =
-    ConfigBuilder("spark.kubernetes.allocation.batch.size")
-      .doc("Number of pods to launch at once in each round of executor allocation.")
-      .intConf
-      .createWithDefault(5)
-
-  val KUBERNETES_ALLOCATION_BATCH_DELAY =
-    ConfigBuilder("spark.kubernetes.allocation.batch.delay")
-      .doc("Number of seconds to wait between each round of executor allocation.")
-      .longConf
-      .createWithDefault(1)
-
   val WAIT_FOR_APP_COMPLETION =
     ConfigBuilder("spark.kubernetes.submission.waitAppCompletion")
-      .doc("In cluster mode, whether to wait for the application to finish before exiting the" +
-        " launcher process.")
+      .doc("In cluster mode, whether to wait for the application to finish before exiting the " +
+        "launcher process.")
       .booleanConf
       .createWithDefault(true)
 
@@ -156,17 +144,16 @@ private[spark] object Config extends Logging {
   val KUBERNETES_DRIVER_ENV_KEY = "spark.kubernetes.driverEnv."
 
   def getK8sMasterUrl(rawMasterString: String): String = {
-    if (!rawMasterString.startsWith("k8s://")) {
-      throw new IllegalArgumentException("Master URL should start with k8s:// in Kubernetes mode.")
-    }
+    require(rawMasterString.startsWith("k8s://"),
+      "Master URL should start with k8s:// in Kubernetes mode.")
     val masterWithoutK8sPrefix = rawMasterString.replaceFirst("k8s://", "")
     if (masterWithoutK8sPrefix.startsWith("http://")
       || masterWithoutK8sPrefix.startsWith("https://")) {
       masterWithoutK8sPrefix
     } else {
       val resolvedURL = s"https://$masterWithoutK8sPrefix"
-      logInfo("No scheme specified for kubernetes master URL, so defaulting to https. Resolved" +
-        s" URL is $resolvedURL")
+      logInfo("No scheme specified for kubernetes master URL, so defaulting to https. Resolved " +
+        s"URL is $resolvedURL")
       resolvedURL
     }
   }

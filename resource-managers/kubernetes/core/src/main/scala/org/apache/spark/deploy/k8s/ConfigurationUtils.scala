@@ -35,15 +35,6 @@ private[spark] object ConfigurationUtils {
     sparkConf.getAllWithPrefix(prefix).toMap
   }
 
-  def requireSecondIfFirstIsDefined(
-      opt1: Option[_],
-      opt2: Option[_],
-      errMessageWhenSecondIsMissing: String): Unit = {
-    opt1.foreach { _ =>
-      require(opt2.isDefined, errMessageWhenSecondIsMissing)
-    }
-  }
-
   def requireNandDefined(opt1: Option[_], opt2: Option[_], errMessage: String): Unit = {
     opt1.foreach { _ => require(opt2.isEmpty, errMessage) }
   }
