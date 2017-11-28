@@ -50,6 +50,7 @@ private[spark] object Config extends Logging {
     ConfigBuilder("spark.kubernetes.docker.image.pullPolicy")
       .doc("Docker image pull policy when pulling any docker image in Kubernetes integration")
       .stringConf
+      .checkValues(Set("Always", "Never", "IfNotPresent"))
       .createWithDefault("IfNotPresent")
 
 
@@ -146,7 +147,7 @@ private[spark] object Config extends Logging {
   def getK8sMasterUrl(rawMasterString: String): String = {
     require(rawMasterString.startsWith("k8s://"),
       "Master URL should start with k8s:// in Kubernetes mode.")
-    val masterWithoutK8sPrefix = rawMasterString.replaceFirst("k8s://", "")
+    val masterWithoutK8sPrefix = rawMasterString.substring("k8s://".length)
     if (masterWithoutK8sPrefix.startsWith("http://")
       || masterWithoutK8sPrefix.startsWith("https://")) {
       masterWithoutK8sPrefix
